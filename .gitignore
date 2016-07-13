@@ -1,0 +1,2 @@
+# Ignore compiled scala objects
+*.class
