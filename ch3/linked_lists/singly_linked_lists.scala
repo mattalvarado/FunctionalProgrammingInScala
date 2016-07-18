@@ -46,4 +46,80 @@ object List {
         case Cons(h, t) if (f(h)) => dropWhile(t, f)
         case _ => l
     }
+
+    // Exercise 3.6
+    def init[A](l: List[A]): List[A] = l match {
+        case Nil => Nil
+        case Cons(h, t) => {
+                if (t == Nil) Nil
+                else Cons(h, init(t))
+        }
+    }
+
+    def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B =
+        as match {
+            case Nil => z
+            case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+        }
+
+    // Exercise 3.9
+    def length[A](as: List[A]): Int = {
+        foldRight(as, 0)((x, y) => 1 + y)
+    }
+
+    // Exercise 3.10
+    def foldLeft[A,B](as: List[A], z: B)(f: (B, A) => B): B =
+        as match {
+            case Nil => z
+            case Cons(x, xs) => foldLeft(xs, f(z, x))(f)
+        }
+
+    // Exercise 3.11
+    def sum2(as: List[Int]): Int =
+        foldLeft(as, 0)(_ + _)
+
+    def product2(as: List[Double]): Double =
+        foldLeft(as,1.0)(_ * _)
+
+    def length2[A](as: List[A]): Int =
+        foldLeft(as,0)((x, y) => x + 1)
+
+     // Exercise 3.12
+    def reverse[A](as: List[A]): List[A] =
+        foldLeft(as, Nil:List[A])((x, y) => Cons(y, x))
+
+    // Exercise 3.14
+    def append[A](bl: List[A], el: List[A]): List[A] =
+        foldRight(bl, el)((x, y) => Cons(x, y))
+
+     // Exercise 3.15
+    def concatinate[A](as: List[List[A]]): List[A] =
+        foldLeft(as, Nil:List[A])(append(_,_))
+
+    // Exercise 3.16
+    def increment(l: List[Int]): List[Int] =
+        foldRight(l, Nil:List[Int])((x,y) => Cons(x + 1, y))
+
+    // Exercise 3.17
+    def dToS(dl: List[Double]): List[String] =
+        foldRight(dl, Nil:List[String])((x, y) => Cons(x.toString, y))
+
+    // Exercise 3.18
+    def map[A,B](as: List[A])(f: A => B): List[B] =
+        foldRight(as, Nil:List[B])((x, y) => Cons(f(x), y))
+
+    // Exercise 3.19
+    def filter[A](as: List[A])(f: A => Boolean): List[A] =
+       foldRight(as, Nil:List[A])((x, y) => {
+                                            if (f(x)) Cons(x, y)
+                                            else y})
+
+    // Exercise 3.20
+    def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] =
+        foldRight(as, Nil:List[B])((x, y) => append(f(x), y))
+
+    // Exercise 3.21
+    def filter2[A](as: List[A])(f: A => Boolean): List[A] =
+        flatMap(as)(x => if (f(x)) List(x) else Nil)
+
 }
