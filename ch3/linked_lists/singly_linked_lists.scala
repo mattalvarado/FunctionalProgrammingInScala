@@ -122,4 +122,30 @@ object List {
     def filter2[A](as: List[A])(f: A => Boolean): List[A] =
         flatMap(as)(x => if (f(x)) List(x) else Nil)
 
+    // Exercise 3.22
+    def listAdd(as: List[Int], bs: List[Int]): List[Int] = (as, bs) match {
+        case (Nil, _) => Nil
+        case (_, Nil) => Nil
+        case (Cons(ah, at), Cons(bh, bt)) => Cons(ah + bh, listAdd(at, bt))
+    }
+
+    // Exercise 3.23
+    def zipWith[A](as: List[A], bs: List[A])(f: (A, A) => A): List[A] =
+    (as, bs) match {
+        case (Nil, _) => Nil
+        case (_, Nil) => Nil
+        case (Cons(ah, at), Cons(bh, bt)) => Cons(f(ah, bh), zipWith(at, bt)(f))
+    }
+
+    // Exercise 3.24
+    def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+        (sup, sub) match {
+            case (_, Nil) => true
+            case (Nil, _) => false
+            case (Cons(ah, at), Cons(bh, bt)) => {
+                                                  if (ah == bh) hasSubsequence(at, bt)
+                                                  else hasSubsequence(at, sub)}
+        }
+    }
+
 }
